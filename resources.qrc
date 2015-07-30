@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>quickwindow.qml</file>
+        <file>quickwindow_new.qml</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="go-next.png">icons/go-next.png</file>
+        <file alias="go-previous.png">icons/go-previous.png</file>
+        <file alias="process-stop.png">icons/process-stop.png</file>
+        <file alias="view-refresh.png">icons/view-refresh.png</file>
+        <file alias="full_screen.png">icons/full_screen.png</file>
+        <file alias="full_screen_16.png">icons/full_screen_16.png</file>
+        <file alias="zoom_in.png">icons/zoom_in.png</file>
+        <file alias="zoom_in_16.png">icons/zoom_in_16.png</file>
+        <file alias="plus_16.png">icons/plus_16.png</file>
+        <file alias="plus.png">icons/plus.png</file>
+        <file alias="menu_16.png">icons/menu_16.png</file>
+        <file alias="menu.png">icons/menu.png</file>
+    </qresource>
+</RCC>
