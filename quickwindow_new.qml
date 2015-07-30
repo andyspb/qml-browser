@@ -118,8 +118,10 @@ ApplicationWindow {
                 }
                 TextField {
                     id: addressBar
-
+                    anchors.leftMargin: 5
+                    anchors.rightMargin: 5
                     Image {
+                        anchors.leftMargin: 2
                         anchors.verticalCenter: addressBar.verticalCenter;
                         x: 5
                         z: 2
@@ -130,21 +132,29 @@ ApplicationWindow {
                     style: TextFieldStyle {
                         background: Rectangle {
                             color: "gray"
+                            implicitHeight: 26
+                            radius: 13
                         }
                         padding {
                             left: 26;
+                            right: 26;
                         }
                     }
                     focus: true
                     Layout.fillWidth: true
                     text: currentWebView && currentWebView.url
                     onAccepted: currentWebView.url = utils.fromUserInput(text)
-                }
-                ToolButton {
-                    id: reloadButton
-                    iconSource: currentWebView && currentWebView.loading ? "icons/process-stop.png" : "icons/view-refresh.png"
-                    onClicked: currentWebView && currentWebView.loading ? currentWebView.stop() : currentWebView.reload()
-                    activeFocusOnTab: !browserWindow.platformIsMac
+
+                    ToolButton {
+                        id: reloadButton
+                        iconSource: "icons/view-refresh.png"
+                        onClicked: currentWebView.reload()
+                        activeFocusOnTab: !browserWindow.platformIsMac
+                        anchors.right: addressBar.right
+                        anchors.rightMargin: 2
+                        anchors.verticalCenter: addressBar.verticalCenter;
+                    }
+
                 }
                 ToolButton {
                     id: zoomButton
