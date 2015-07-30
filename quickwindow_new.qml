@@ -204,17 +204,16 @@ ApplicationWindow {
 
     TabView {
         id: tabs
-
-        function createEmptyTab() {
-            var tab = addTab("", tabComponent)
-            // We must do this first to make sure that tab.active gets set so that tab.item gets instantiated immediately.
-            tabs.currentIndex = tabs.count - 1
-            tab.title = Qt.binding(function() { return tab.item.title })
-            return tab
-        }
-
         anchors.fill: parent
-        Component.onCompleted: createEmptyTab()
+        Component.onCompleted: {
+            createEmptyTab()
+//            createAddTab()
+        }
+        style: TabViewStyle {
+            tab: Rectangle {
+                color: "black"
+            }
+        }
 
         Component {
             id: tabComponent
@@ -232,6 +231,25 @@ ApplicationWindow {
                 }
             }
         }
+        function createEmptyTab() {
+            console.log('>>> createEmptyTab')
+            var tab = addTab("", tabComponent)
+            // We must do this first to make sure that tab.active gets set so that tab.item gets instantiated immediately.
+            tabs.currentIndex = tabs.count - 1
+            tab.title = Qt.binding(function() { return tab.item.title })
+            return tab
+        }
+
+        function createAddTab() {
+            console.log('>>> createAddTab')
+            var tab = addTab("+", tabAddComponent)
+            if (tabs.count >= 2) {
+                tabs.currentIndex = tabs.count - 2
+            }
+            tab.title = Qt.binding(function() { return tab.item.title })
+            return tab
+        }
+
     }
 
     Rectangle {
