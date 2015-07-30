@@ -6,7 +6,7 @@ HEADERS = quickwindow.h \
 SOURCES = quickwindow.cpp \
           main.cpp
 
-OTHER_FILES += quickwindow.qml
+OTHER_FILES += quickwindow.qml quickwindow_new.qml
 
 RESOURCES += resources.qrc
 
@@ -16,5 +16,5 @@ qtHaveModule(widgets) {
     QT += widgets # QApplication is required to get native styling with QtQuickControls
 }
 
-target.path = $$[QT_INSTALL_EXAMPLES]/webengine/quicknanobrowser
+target.path = qml-browser
 INSTALLS += target

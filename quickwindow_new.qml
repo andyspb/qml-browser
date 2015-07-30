@@ -55,7 +55,6 @@ ApplicationWindow {
     height: 900
     visible: true
     title: currentWebView && currentWebView.title
-
     // Create a styleItem to determine the platform.
     // When using style "mac", ToolButtons are not supposed to accept focus.
     StyleItem { id: styleItem }
@@ -96,7 +95,12 @@ ApplicationWindow {
 
     toolBar: ToolBar {
         id: navigationBar
-            RowLayout {
+        style: ToolBarStyle {
+            background: Rectangle {
+                color: "black"
+            }
+        }
+             RowLayout {
                 anchors.fill: parent;
                 ToolButton {
                     id: backButton
@@ -112,14 +116,9 @@ ApplicationWindow {
                     enabled: currentWebView && currentWebView.canGoForward
                     activeFocusOnTab: !browserWindow.platformIsMac
                 }
-                ToolButton {
-                    id: reloadButton
-                    iconSource: currentWebView && currentWebView.loading ? "icons/process-stop.png" : "icons/view-refresh.png"
-                    onClicked: currentWebView && currentWebView.loading ? currentWebView.stop() : currentWebView.reload()
-                    activeFocusOnTab: !browserWindow.platformIsMac
-                }
                 TextField {
                     id: addressBar
+
                     Image {
                         anchors.verticalCenter: addressBar.verticalCenter;
                         x: 5
@@ -129,6 +128,9 @@ ApplicationWindow {
                         source: currentWebView && currentWebView.icon
                     }
                     style: TextFieldStyle {
+                        background: Rectangle {
+                            color: "gray"
+                        }
                         padding {
                             left: 26;
                         }
@@ -138,29 +140,61 @@ ApplicationWindow {
                     text: currentWebView && currentWebView.url
                     onAccepted: currentWebView.url = utils.fromUserInput(text)
                 }
-            }
-            ProgressBar {
-                id: progressBar
-                height: 3
-                anchors {
-                    left: parent.left
-                    top: parent.bottom
-                    right: parent.right
-                    leftMargin: -parent.leftMargin
-                    rightMargin: -parent.rightMargin
+                ToolButton {
+                    id: reloadButton
+                    iconSource: currentWebView && currentWebView.loading ? "icons/process-stop.png" : "icons/view-refresh.png"
+                    onClicked: currentWebView && currentWebView.loading ? currentWebView.stop() : currentWebView.reload()
+                    activeFocusOnTab: !browserWindow.platformIsMac
                 }
-                style: ProgressBarStyle {
-                    background: Item {}
+                ToolButton {
+                    id: zoomButton
+                    iconSource: "icons/zoom_in_16.png"
+//                    onClicked: onClickZoomButton()
+                    activeFocusOnTab: !browserWindow.platformIsMac
+                    style: ButtonStyle {
+                        background: Rectangle {
+                            implicitWidth: 24
+                            implicitHeight: 24
+                            color: "white"
+                            radius: 12
+                        }
+                    }
                 }
-                z: -2;
-                minimumValue: 0
-                maximumValue: 100
-                value: (currentWebView && currentWebView.loadProgress < 100) ? currentWebView.loadProgress : 0
+                ToolButton {
+                    id: menuButton
+                    iconSource: "icons/menu_16.png"
+//                    onClicked: onClickMenuButtion()
+                    activeFocusOnTab: !browserWindow.platformIsMac
+                    style: ButtonStyle {
+                        background: Rectangle {
+                            implicitWidth: 24
+                            implicitHeight: 24
+                            color: "white"
+                            radius: 12
+                        }
+                    }
+                }
+                ToolButton {
+                    id: fullscreenButton
+                    iconSource: "icons/full_screen_16.png"
+//                    onClicked: onClickFullScreen()
+                    activeFocusOnTab: !browserWindow.platformIsMac
+                    style: ButtonStyle {
+                        background: Rectangle {
+                            implicitWidth: 24
+                            implicitHeight: 24
+                            color: "white"
+                            radius: 12
+                        }
+                    }
+                }
+
             }
     }
 
     TabView {
         id: tabs
+
         function createEmptyTab() {
             var tab = addTab("", tabComponent)
             // We must do this first to make sure that tab.active gets set so that tab.item gets instantiated immediately.
