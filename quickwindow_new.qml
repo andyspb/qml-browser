@@ -207,12 +207,74 @@ ApplicationWindow {
         anchors.fill: parent
         Component.onCompleted: {
             createEmptyTab()
-//            createAddTab()
+            createAddTab()
         }
+
         style: TabViewStyle {
+            frameOverlap: 1
             tab: Rectangle {
-                color: "black"
+                anchors.leftMargin: 5
+                anchors.rightMargin: 10
+                color: styleData.selected ? "red" : "black"
+                implicitWidth: Math.max(text.width + 4, 200)
+                implicitHeight: 30
+                property string name
+                property string icon
+
+                Text {
+                    id: text
+                    anchors.centerIn: parent
+                    anchors.rightMargin: 15
+                    anchors.leftMargin: 3
+                    text: styleData.title
+                    color: styleData.selected ? "white" : "gray"
+                }
+//                Button {
+//                    id: closeButton
+//                    iconSource: "icons/close_16.png"
+////                    iconSource: "icons/close_16.png"
+////                    onClicked: currentWebView.reload()
+//                    activeFocusOnTab: !browserWindow.platformIsMac
+//                    anchors.right: parent.right
+//                    anchors.rightMargin: 2
+//                    anchors.verticalCenter: tabs.verticalCenter;
+//                    style: ButtonStyle {
+//                        background: Rectangle {
+//                            implicitWidth: 12
+//                            implicitHeight: 12
+//                            color: "gray"
+//                            radius: 6
+//                        }
+//                    }
+//                    onClicked: {
+//                        tabs.clickCloseButton()
+//                    }
+//                }
+                ToolButton {
+                    id: addButton
+                    iconSource: "icons/plus.png"
+//                    iconSource: "icons/close_16.png"
+//                    onClicked: currentWebView.reload()
+                    activeFocusOnTab: !browserWindow.platformIsMac
+                    anchors.right: parent.right
+                    anchors.rightMargin: 2
+                    anchors.verticalCenter: tabs.verticalCenter;
+                    style: ButtonStyle {
+                        background: Rectangle {
+                            implicitWidth: 12
+                            implicitHeight: 12
+                            color: "gray"
+                            radius: 6
+                        }
+                    }
+                    onClicked: {
+                        tabs.clickAddButton()
+                    }
+                }
             }
+//            frame: Rectangle {
+//                color: "green"
+//            }
         }
 
         Component {
@@ -220,7 +282,6 @@ ApplicationWindow {
             WebEngineView {
                 id: webEngineView
                 focus: true
-
                 onLinkHovered: {
                     if (hoveredUrl == "")
                         resetStatusText.start()
@@ -231,25 +292,83 @@ ApplicationWindow {
                 }
             }
         }
+        Component {
+            id: tabAddComponent
+            Rectangle {
+                color: "white"
+                implicitWidth: 100
+            }
+
+//            WebEngineView {
+//                id: addWebEngineView
+//                focus: false
+//                onClipChanged: {
+//                    console.log(">>> onClipChanged")
+//                }
+//            }
+        }
+
+        function clickCloseButton() {
+            console.log("clickCloseButton")
+        }
+
+        function clickAddButton() {
+            console.log("clickAddButton")
+        }
+
+
+        function isLastTab() {
+            console.log("tabs.tabPosition ="+tabs.tabPosition())
+            return true
+        }
+
         function createEmptyTab() {
-            console.log('>>> createEmptyTab')
-            var tab = addTab("", tabComponent)
+            var tabsCount = tabs.count
+            console.log('>>> createEmptyTab tabsCount:'+tabsCount)
+            var tab = addTab("New tab", tabComponent)
             // We must do this first to make sure that tab.active gets set so that tab.item gets instantiated immediately.
             tabs.currentIndex = tabs.count - 1
+            console.log('tabs.tabPosition: ' + tabs.tabPosition)
             tab.title = Qt.binding(function() { return tab.item.title })
+//            tab.closeButton.iconsSource = "icons/close_16.png"
             return tab
         }
 
+        function insertEmptyTab() {
+            var pos = tabs.count - 2
+            console.log('>>> insertEmptyTab  tabs.count - 2 = ' + pos)
+            var tab = insertTab(pos, "New tab", tabComponent)
+            // We must do this first to make sure that tab.active gets set so that tab.item gets instantiated immediately.
+            tabs.currentIndex = tabs.count - 2
+            tab.title = Qt.binding(function() { return tab.item.title })
+//            tab.closeButton.iconsSource = "icons/close_16.png"
+            return tab
+        }
+
+
         function createAddTab() {
-            console.log('>>> createAddTab')
+            var tabsCount = tabs.count
+            console.log('>>> createAddTab tabsCount:'+tabsCount)
             var tab = addTab("+", tabAddComponent)
             if (tabs.count >= 2) {
                 tabs.currentIndex = tabs.count - 2
             }
-            tab.title = Qt.binding(function() { return tab.item.title })
+            var last = tabs.count-1;
+            console.log('last: ' + last)
+            console.log('tabs.tabPosition: ' + tabs.tabPosition)
+//            tabs.getTab(last).active = true; // Now the content will be loaded
+            console.log('Current tab: ' + tabs.getTab(last).item);
+//            tabs.getTab(last).item.color = "red";
+//            tabs.getTab(last).item.onClicked = tabs.insertEmptyTab();
+            console.log('tab: ' + tab.item);
+            tab.active = true;
+            tab.icon =  "icons/close.png";
+//            tab.closeButton.iconSource = "icons/plus.png"
+//            tab.item.onClicked = tabs.insertEmptyTab();
+            console.log('>>> createAddTab:' + tabs.currentIndex);
+            console.log('>>> createAddTab:' + tabs.getTab(last));
             return tab
         }
-
     }
 
     Rectangle {

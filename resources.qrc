@@ -16,5 +16,7 @@
         <file alias="plus.png">icons/plus.png</file>
         <file alias="menu_16.png">icons/menu_16.png</file>
         <file alias="menu.png">icons/menu.png</file>
+        <file alias="close_16.png">icons/close_16.png</file>
+        <file alias="close.png">icons/close.png</file>
     </qresource>
 </RCC>
