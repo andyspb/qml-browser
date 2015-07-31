@@ -216,7 +216,7 @@ ApplicationWindow {
                 anchors.leftMargin: 5
                 anchors.rightMargin: 10
                 color: styleData.selected ? "red" : "black"
-                implicitWidth: Math.max(text.width + 4, 200)
+                implicitWidth: styleData.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
                 implicitHeight: 30
                 property string name
                 property string icon
@@ -229,33 +229,14 @@ ApplicationWindow {
                     text: styleData.title
                     color: styleData.selected ? "white" : "gray"
                 }
-//                Button {
-//                    id: closeButton
-//                    iconSource: "icons/close_16.png"
-////                    iconSource: "icons/close_16.png"
-////                    onClicked: currentWebView.reload()
-//                    activeFocusOnTab: !browserWindow.platformIsMac
-//                    anchors.right: parent.right
-//                    anchors.rightMargin: 2
-//                    anchors.verticalCenter: tabs.verticalCenter;
-//                    style: ButtonStyle {
-//                        background: Rectangle {
-//                            implicitWidth: 12
-//                            implicitHeight: 12
-//                            color: "gray"
-//                            radius: 6
-//                        }
-//                    }
-//                    onClicked: {
-//                        tabs.clickCloseButton()
-//                    }
-//                }
-                ToolButton {
+                Button {
                     id: addButton
-                    iconSource: "icons/plus.png"
+                    iconSource: styleData.index === (tabs.count -1 ) ? "icons/plus.png" : "icons/close.png"
+                    visible: styleData.index === 0 ? false : true
 //                    iconSource: "icons/close_16.png"
 //                    onClicked: currentWebView.reload()
-                    activeFocusOnTab: !browserWindow.platformIsMac
+                    activeFocusOnTab: !browserWindow.plaa.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
+                    implicitHeight: 30
                     anchors.right: parent.right
                     anchors.rightMargin: 2
                     anchors.verticalCenter: tabs.verticalCenter;
@@ -268,7 +249,8 @@ ApplicationWindow {
                         }
                     }
                     onClicked: {
-                        tabs.clickAddButton()
+                        styleData.index === (tabs.count -1 ) ? tabs.clickAddButton() : tabs.clickCloseButton()
+
                     }
                 }
             }
@@ -314,6 +296,7 @@ ApplicationWindow {
 
         function clickAddButton() {
             console.log("clickAddButton")
+            tabs.insertEmptyTab()
         }
 
 
@@ -349,10 +332,11 @@ ApplicationWindow {
         function createAddTab() {
             var tabsCount = tabs.count
             console.log('>>> createAddTab tabsCount:'+tabsCount)
-            var tab = addTab("+", tabAddComponent)
+            var tab = addTab("", tabAddComponent)
             if (tabs.count >= 2) {
                 tabs.currentIndex = tabs.count - 2
             }
+
             var last = tabs.count-1;
             console.log('last: ' + last)
             console.log('tabs.tabPosition: ' + tabs.tabPosition)
