@@ -214,6 +214,9 @@ ApplicationWindow {
             frameOverlap: 1
             frame: Rectangle { color: "black" }
             tabBar: Rectangle { color: "black"; anchors.fill: parent }
+            tabOverlap: -20
+            tabsAlignment: Qt.AlignLeft
+            padding.left: 2
             tab: Rectangle {
                 anchors.leftMargin: 5
                 anchors.rightMargin: 10
@@ -238,10 +241,20 @@ ApplicationWindow {
                 Text {
                     id: text
                     anchors.centerIn: parent
-                    anchors.rightMargin: 15
+//                    anchors.rightMargin: 15
                     anchors.leftMargin: 3
                     text: styleData.title
+//                    text: currentWebView && currentWebView.url
                     color: "white"
+                    Image {
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter;
+                        x: 1
+                        z: 1
+                        id: tabImage
+                        width: 16; height: 16
+                        source: currentWebView && currentWebView.icon
+                    }
                 }
                 Button {
                     id: addButton
@@ -249,7 +262,7 @@ ApplicationWindow {
                     visible: styleData.index === 0 ? false : true
 //                    iconSource: "icons/close_16.png"
 //                    onClicked: currentWebView.reload()
-                    activeFocusOnTab: !browserWindow.plaa.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
+                    activeFocusOnTab: styleData.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
                     implicitHeight: 30
                     anchors.right: parent.right
                     anchors.rightMargin: 0
