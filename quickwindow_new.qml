@@ -93,6 +93,15 @@ ApplicationWindow {
         }
     }
 
+    Action {
+        shortcut: "Esc"
+        onTriggered: {
+            console.log('>>> Escape actipon')
+            tabs.visible = true
+            navigationBar.visible = true
+        }
+    }
+
     toolBar: ToolBar {
         id: navigationBar
         style: ToolBarStyle {
@@ -159,7 +168,7 @@ ApplicationWindow {
                 ToolButton {
                     id: zoomButton
                     iconSource: "icons/zoom_in_16.png"
-//                    onClicked: onClickZoomButton()
+//                    onClicked: onClickZoomButton()navigationBar
                     activeFocusOnTab: !browserWindow.platformIsMac
                     style: ButtonStyle {
                         background: Rectangle {
@@ -187,7 +196,7 @@ ApplicationWindow {
                 ToolButton {
                     id: fullscreenButton
                     iconSource: "icons/full_screen_16.png"
-//                    onClicked: onClickFullScreen()
+                    onClicked: navigationBar.onClickFullScreen()
                     activeFocusOnTab: !browserWindow.platformIsMac
                     style: ButtonStyle {
                         background: Rectangle {
@@ -199,6 +208,12 @@ ApplicationWindow {
                     }
                 }
 
+            }
+
+            function onClickFullScreen() {
+                console.log('>>> onClickFullScreen')
+                tabs.visible = false
+                navigationBar.visible = false
             }
     }
 
@@ -349,7 +364,6 @@ ApplicationWindow {
             tabs.currentIndex = tabs.count - 1
             console.log('tabs.tabPosition: ' + tabs.tabPosition)
             tab.title = Qt.binding(function() { return tab.item.title })
-//            tab.closeButton.iconsSource = "icons/close_16.png"
             return tab
         }
 
@@ -360,7 +374,6 @@ ApplicationWindow {
             // We must do this first to make sure that tab.active gets set so that tab.item gets instantiated immediately.
             tabs.currentIndex = pos
             tab.title = "New Tab"
-//            tab.closeButton.iconsSource = "icons/close_16.png"
             return tab
         }
 
