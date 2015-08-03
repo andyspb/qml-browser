@@ -18,5 +18,9 @@
         <file alias="menu.png">icons/menu.png</file>
         <file alias="close_16.png">icons/close_16.png</file>
         <file alias="close.png">icons/close.png</file>
+        <file alias="top_border.png">icons/top_border.png</file>
+        <file alias="no_top_border.png">icons/no_top_border.png</file>
+        <file alias="black_box.png">icons/black_box.png</file>
+        <file alias="top_gray_border.png">icons/top_gray_border.png</file>
     </qresource>
 </RCC>

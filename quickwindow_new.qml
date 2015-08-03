@@ -212,14 +212,28 @@ ApplicationWindow {
 
         style: TabViewStyle {
             frameOverlap: 1
+            frame: Rectangle { color: "black" }
+            tabBar: Rectangle { color: "black"; anchors.fill: parent }
             tab: Rectangle {
                 anchors.leftMargin: 5
                 anchors.rightMargin: 10
-                color: styleData.selected ? "red" : "black"
+                property color frameColor: "black"
+                property color fillColor: "black"
+                color: "black"
                 implicitWidth: styleData.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
                 implicitHeight: 30
-                property string name
-                property string icon
+                border.width: 0
+                border.color: "black"
+                BorderImage {
+                    id: borderImage
+                    source: styleData.index === tabs.currentIndex ? "icons/top_border.png" : "icons/top_gray_border.png"
+                    width: parent.width
+                    height: 30
+                    border.left: 0;
+                    border.top: 2
+                    border.right: 0;
+                    border.bottom: 0
+                }
 
                 Text {
                     id: text
@@ -227,7 +241,7 @@ ApplicationWindow {
                     anchors.rightMargin: 15
                     anchors.leftMargin: 3
                     text: styleData.title
-                    color: styleData.selected ? "white" : "gray"
+                    color: "white"
                 }
                 Button {
                     id: addButton
@@ -238,25 +252,32 @@ ApplicationWindow {
                     activeFocusOnTab: !browserWindow.plaa.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
                     implicitHeight: 30
                     anchors.right: parent.right
-                    anchors.rightMargin: 2
+                    anchors.rightMargin: 0
+                    anchors.leftMargin: 2
                     anchors.verticalCenter: tabs.verticalCenter;
+                    BorderImage {
+                        id: buttonborderImage
+                        source: styleData.index === tabs.currentIndex ? "icons/top_border.png" : "icons/top_gray_border.png"
+                        width: parent.width
+                        height: 30
+                        border.left: 0;
+                        border.top: 2
+                        border.right: 0;
+                        border.bottom: 0
+                    }
                     style: ButtonStyle {
                         background: Rectangle {
                             implicitWidth: 12
                             implicitHeight: 12
-                            color: "gray"
-                            radius: 6
+                            color: "black"
                         }
                     }
                     onClicked: {
-                        styleData.index === (tabs.count -1 ) ? tabs.clickAddButton() : tabs.clickCloseButton()
-
+                        styleData.index === (tabs.count -1 ) ? tabs.clickAddButton() : tabs.clickCloseButton(styleData.index)
                     }
                 }
             }
-//            frame: Rectangle {
-//                color: "green"
-//            }
+
         }
 
         Component {
@@ -290,8 +311,10 @@ ApplicationWindow {
 //            }
         }
 
-        function clickCloseButton() {
-            console.log("clickCloseButton")
+        function clickCloseButton(index) {
+            console.log(">>> clickCloseButton at index:"+index)
+            tabs.removeTab(index)
+            tabs.currentIndex = index-1
         }
 
         function clickAddButton() {
@@ -318,12 +341,12 @@ ApplicationWindow {
         }
 
         function insertEmptyTab() {
-            var pos = tabs.count - 2
-            console.log('>>> insertEmptyTab  tabs.count - 2 = ' + pos)
+            var pos = tabs.count - 1
+            console.log('>>> insertEmptyTab  pos:'+pos)
             var tab = insertTab(pos, "New tab", tabComponent)
             // We must do this first to make sure that tab.active gets set so that tab.item gets instantiated immediately.
-            tabs.currentIndex = tabs.count - 2
-            tab.title = Qt.binding(function() { return tab.item.title })
+            tabs.currentIndex = pos
+            tab.title = "New Tab"
 //            tab.closeButton.iconsSource = "icons/close_16.png"
             return tab
         }
@@ -340,15 +363,10 @@ ApplicationWindow {
             var last = tabs.count-1;
             console.log('last: ' + last)
             console.log('tabs.tabPosition: ' + tabs.tabPosition)
-//            tabs.getTab(last).active = true; // Now the content will be loaded
             console.log('Current tab: ' + tabs.getTab(last).item);
-//            tabs.getTab(last).item.color = "red";
-//            tabs.getTab(last).item.onClicked = tabs.insertEmptyTab();
             console.log('tab: ' + tab.item);
             tab.active = true;
             tab.icon =  "icons/close.png";
-//            tab.closeButton.iconSource = "icons/plus.png"
-//            tab.item.onClicked = tabs.insertEmptyTab();
             console.log('>>> createAddTab:' + tabs.currentIndex);
             console.log('>>> createAddTab:' + tabs.getTab(last));
             return tab
