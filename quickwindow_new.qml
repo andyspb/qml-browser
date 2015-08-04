@@ -238,10 +238,11 @@ ApplicationWindow {
                 property color frameColor: "black"
                 property color fillColor: "black"
                 color: "black"
-                implicitWidth: styleData.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
+//                implicitWidth: styleData.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
+                implicitWidth: styleData.index === (tabs.count -1 ) ? 30 : 200
                 implicitHeight: 30
-                border.width: 0
-                border.color: "black"
+                border.width: 1
+                border.color: "red"
                 BorderImage {
                     id: borderImage
                     source: styleData.index === tabs.currentIndex ? "icons/top_border.png" : "icons/top_gray_border.png"
@@ -250,33 +251,48 @@ ApplicationWindow {
                     border.left: 0;
                     border.top: 2
                     border.right: 0;
-                    border.bottom: 0
+                    border.bottom: 0;
+                }
+                Image {
+                    anchors.left: parent.left
+                    anchors.leftMargin: 2
+                    anchors.verticalCenter: parent.verticalCenter;
+                    visible: styleData.index === (tabs.count -1 ) ? false:true
+                    x: 1
+                    z: 1
+                    id: tabImage
+                    width: 16;
+                    height: 16
+                    source: {
+                        console.log('>> Image currentWebView:'+currentWebView)
+                        if (currentWebView !== null && currentWebView.icon !== null && styleData.index === tabs.currentIndex)
+                            currentWebView.icon
+                    }
                 }
 
                 Text {
                     id: text
-                    anchors.centerIn: parent
-//                    anchors.rightMargin: 15
-                    anchors.leftMargin: 3
-                    text: styleData.title
-//                    text: currentWebView && currentWebView.url
-                    color: "white"
-                    Image {
-                        anchors.left: parent.left
-                        anchors.verticalCenter: parent.verticalCenter;
-                        x: 1
-                        z: 1
-                        id: tabImage
-                        width: 16; height: 16
-                        source: currentWebView && currentWebView.icon
+                    width: 180
+                    anchors.left: parent.left
+                    anchors.leftMargin: 20
+                    anchors.verticalCenter: parent.verticalCenter;
+                    visible: styleData.index === (tabs.count -1 ) ? false:true
+                    elide : Text.ElideRight
+                    text: {
+                        console.log('>> Text currentWebView:'+currentWebView)
+                        console.log('>> Text currentWebView.url:'+currentWebView.url)
+                        if (currentWebView === null || currentWebView.url === null)
+                            "New Tab"
+                        else
+                            if (styleData.index === tabs.currentIndex)
+                                currentWebView.url
                     }
+                    color: "white"
                 }
                 Button {
                     id: addButton
                     iconSource: styleData.index === (tabs.count -1 ) ? "icons/plus.png" : "icons/close.png"
                     visible: styleData.index === 0 ? false : true
-//                    iconSource: "icons/close_16.png"
-//                    onClicked: currentWebView.reload()
                     activeFocusOnTab: styleData.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
                     implicitHeight: 30
                     anchors.right: parent.right
@@ -319,6 +335,7 @@ ApplicationWindow {
                     else {
                         resetStatusText.stop()
                         statusText.text = hoveredUrl
+                        console.log('statusText.text >> ' + statusText.text)
                     }
                 }
             }
@@ -363,7 +380,9 @@ ApplicationWindow {
             // We must do this first to make sure that tab.active gets set so that tab.item gets instantiated immediately.
             tabs.currentIndex = tabs.count - 1
             console.log('tabs.tabPosition: ' + tabs.tabPosition)
-            tab.title = Qt.binding(function() { return tab.item.title })
+//            tab.title = Qt.binding(function() { return tab.item.title })
+            tab.title = "New Tab"
+
             return tab
         }
 
