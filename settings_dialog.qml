@@ -18,13 +18,15 @@ anchors.fill: parent
     // This rectangle is the actual popup
     Rectangle {
         id: dialogWindow
-        width: 80
+        width: 85
         height: 100
         radius: 10
         color: "gray"
         anchors {
             top: parent.bottom
+            topMargin: 10
             right: parent.right
+            rightMargin: -30
         }
         ColumnLayout {
             Text {
@@ -32,6 +34,10 @@ anchors.fill: parent
                 anchors.topMargin: 5
                 text: "History"
                 color: "white"
+                anchors {
+                    left: parent.left
+                    leftMargin: 5
+                }
                 // For demo I do not put any buttons, or other fancy stuff on the popup
                 // clicking the whole dialogWindow will dismiss it
                 MouseArea{
@@ -48,6 +54,10 @@ anchors.fill: parent
                 anchors.topMargin: 25
                 text: "Bookmarks"
                 color: "white"
+                anchors {
+                    left: parent.left
+                    leftMargin: 5
+                }
                 // For demo I do not put any buttons, or other fancy stuff on the popup
                 // clicking the whole dialogWindow will dismiss it
                 MouseArea{
@@ -64,6 +74,10 @@ anchors.fill: parent
                 anchors.topMargin: 50
                 text: "Settings"
                 color: "white"
+                anchors {
+                    left: parent.left
+                    leftMargin: 5
+                }
                 // For demo I do not put any buttons, or other fancy stuff on the popup
                 // clicking the whole dialogWindow will dismiss it
                 MouseArea{
@@ -80,6 +94,10 @@ anchors.fill: parent
                 anchors.topMargin: 75
                 text: "Encoding"
                 color: "white"
+                anchors {
+                    left: parent.left
+                    leftMargin: 5
+                }
                 // For demo I do not put any buttons, or other fancy stuff on the popup
                 // clicking the whole dialogWindow will dismiss it
                 MouseArea{
