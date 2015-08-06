@@ -6,7 +6,7 @@ HEADERS = quickwindow.h \
 SOURCES = quickwindow.cpp \
           main.cpp
 
-OTHER_FILES += quickwindow.qml quickwindow_new.qml
+OTHER_FILES += quickwindow.qml quickwindow_new.qml settings_window.qml settings_dialog.qml
 
 RESOURCES += resources.qrc
 
@@ -18,3 +18,7 @@ qtHaveModule(widgets) {
 
 target.path = qml-browser
 INSTALLS += target
+
+DISTFILES += \
+    settings_window.qml \
+    settings_dialog.qml

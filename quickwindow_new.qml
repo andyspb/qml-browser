@@ -50,6 +50,7 @@ ApplicationWindow {
     id: browserWindow
     function load(url) { currentWebView.url = url }
     property Item currentWebView: tabs.currentIndex < tabs.count ? tabs.getTab(tabs.currentIndex).item : null
+    property Item dialogComponent: null
 
     width: 1300
     height: 900
@@ -59,6 +60,18 @@ ApplicationWindow {
     // When using style "mac", ToolButtons are not supposed to accept focus.
     StyleItem { id: styleItem }
     property bool platformIsMac: styleItem.style == "mac"
+
+    MouseArea{
+        anchors.fill : parent
+        propagateComposedEvents : true
+        onClicked : {
+            console.log(">>> browserWindow.MouseArea.OnClicked");
+            if (dialogComponent != null) {
+                console.log(">>> dialogComponent.destroy()");
+                dialogComponent.destroy();
+            }
+        }
+    }
 
     Action {
         id: focus
@@ -92,11 +105,10 @@ ApplicationWindow {
                 tabs.removeTab(tabs.currentIndex)
         }
     }
-
     Action {
         shortcut: "Esc"
         onTriggered: {
-            console.log('>>> Escape actipon')
+            console.log('>>> Escape')
             tabs.visible = true
             navigationBar.visible = true
         }
@@ -182,7 +194,7 @@ ApplicationWindow {
                 ToolButton {
                     id: menuButton
                     iconSource: "icons/menu_16.png"
-//                    onClicked: onClickMenuButtion()
+                    onClicked: navigationBar.onClickMenuButton()
                     activeFocusOnTab: !browserWindow.platformIsMac
                     style: ButtonStyle {
                         background: Rectangle {
@@ -208,6 +220,15 @@ ApplicationWindow {
                     }
                 }
 
+            }
+
+            function onClickMenuButton() {
+                console.log('>>> onClickMenuButton')
+//                var component = Qt.createComponent("settings_window.qml")
+//                var window = component.createObject(menuButton)
+//                window.show()
+                dialogComponent = Qt.createComponent("settings_dialog.qml").createObject(menuButton, {});
+                console.log('<<< onClickMenuButton')
             }
 
             function onClickFullScreen() {
@@ -241,8 +262,8 @@ ApplicationWindow {
 //                implicitWidth: styleData.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
                 implicitWidth: styleData.index === (tabs.count -1 ) ? 30 : 200
                 implicitHeight: 30
-                border.width: 1
-                border.color: "red"
+                border.width: 0
+                border.color: "black"
                 BorderImage {
                     id: borderImage
                     source: styleData.index === tabs.currentIndex ? "icons/top_border.png" : "icons/top_gray_border.png"
