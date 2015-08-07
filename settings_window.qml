@@ -1,39 +1,114 @@
-import QtQuick 2.3
-import QtQuick.Controls 1.2
-import QtQuick.Window 2.0
-import QtQuick.Dialogs 1.2
+import QtQuick 2.0
+import QtQuick.Layouts 1.0
 
-//Rectangle {
-//        id: settingWindow
-//        width: 200;
-//        height: 200
+Item {
+id: settingsComponent
+anchors.fill: parent
 
-//    //    flags: {Qt.Dialog, Qt.WindowStaysOnTopHint}
-//    //    modality: Qt.WindowModal
+    // Add a simple animation to fade in the popup
+    // let the opacity go from 0 to 1 in 400ms
+    PropertyAnimation {
+        target: settingsComponent;
+        property: "opacity";
+        duration: 400; from: 0; to: 1;
+        easing.type: Easing.InOutQuad ;
+        running: true
+    }
 
-//        border.width: 1
-//        border.color: "red"
-//        Button {
-//            anchors.centerIn: parent
-//            text: "Click me"
-//            onClicked: {
-//                console.log('>>> settingWindow.onClicked parent:'+parent)
-//            }
-//        }
-//}
-
-Dialog {
-    visible: true
-    title: "Blue sky dialog"
-
-    contentItem: Rectangle {
-        color: "lightskyblue"
-        implicitWidth: 300
-        implicitHeight: 300
-        Text {
-            text: "Hello blue sky!"
-            color: "navy"
-            anchors.centerIn: parent
+    // This rectangle is the actual popup
+    Rectangle {
+        id: dialogWindow
+        width: 85
+        height: 100
+        radius: 10
+        color: "gray"
+        anchors {
+            top: parent.bottom
+            topMargin: 10
+            right: parent.right
+            rightMargin: -30
+        }
+        ColumnLayout {
+            Text {
+                anchors.top: parent.top
+                anchors.topMargin: 5
+                text: "History"
+                color: "white"
+                anchors {
+                    left: parent.left
+                    leftMargin: 5
+                }
+                // For demo I do not put any buttons, or other fancy stuff on the popup
+                // clicking the whole dialogWindow will dismiss it
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        // destroy object is needed when you dynamically create it
+                        console.log('>>>[History] settingsComponent.MouseArea.onClicked()')
+                        settingsComponent.destroy()
+                    }
+                }
+            }
+            Text {
+                anchors.top: parent.top
+                anchors.topMargin: 25
+                text: "Bookmarks"
+                color: "white"
+                anchors {
+                    left: parent.left
+                    leftMargin: 5
+                }
+                // For demo I do not put any buttons, or other fancy stuff on the popup
+                // clicking the whole dialogWindow will dismiss it
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        // destroy object is needed when you dynamically create it
+                        console.log('>>>[Bookmarks] settingsComponent.MouseArea.onClicked()')
+                        settingsComponent.destroy()
+                    }
+                }
+            }
+            Text {
+                anchors.top: parent.top
+                anchors.topMargin: 50
+                text: "Settings"
+                color: "white"
+                anchors {
+                    left: parent.left
+                    leftMargin: 5
+                }
+                // For demo I do not put any buttons, or other fancy stuff on the popup
+                // clicking the whole dialogWindow will dismiss it
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        // destroy object is needed when you dynamically create it
+                        console.log('>>>[Settings] settingsComponent.MouseArea.onClicked()')
+                        settingsComponent.destroy()
+                    }
+                }
+            }
+            Text {
+                anchors.top: parent.top
+                anchors.topMargin: 75
+                text: "Encoding"
+                color: "white"
+                anchors {
+                    left: parent.left
+                    leftMargin: 5
+                }
+                // For demo I do not put any buttons, or other fancy stuff on the popup
+                // clicking the whole dialogWindow will dismiss it
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        // destroy object is needed when you dynamically create it
+                        console.log('>>>[Encoding] settingsComponent.MouseArea.onClicked()')
+                        settingsComponent.destroy()
+                    }
+                }
+            }
         }
     }
 }

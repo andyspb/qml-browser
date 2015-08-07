@@ -6,7 +6,7 @@ HEADERS = quickwindow.h \
 SOURCES = quickwindow.cpp \
           main.cpp
 
-OTHER_FILES += quickwindow.qml quickwindow_new.qml settings_window.qml settings_dialog.qml
+OTHER_FILES += quickwindow.qml quickwindow_new.qml
 
 RESOURCES += resources.qrc
 
@@ -20,5 +20,4 @@ target.path = qml-browser
 INSTALLS += target
 
 DISTFILES += \
-    settings_window.qml \
-    settings_dialog.qml
+    settings_window.qml

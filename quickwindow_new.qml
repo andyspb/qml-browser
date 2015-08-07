@@ -50,7 +50,7 @@ ApplicationWindow {
     id: browserWindow
     function load(url) { currentWebView.url = url }
     property Item currentWebView: tabs.currentIndex < tabs.count ? tabs.getTab(tabs.currentIndex).item : null
-    property Item dialogComponent: null
+    property Item settingsComponent: null
 
     width: 1300
     height: 900
@@ -67,8 +67,8 @@ ApplicationWindow {
         onClicked : {
             console.log(">>> browserWindow.MouseArea.OnClicked");
             if (dialogComponent != null) {
-                console.log(">>> dialogComponent.destroy()");
-                dialogComponent.destroy();
+                console.log(">>> settingsComponent.destroy()");
+                settingsComponent.destroy();
             }
         }
     }
@@ -224,10 +224,7 @@ ApplicationWindow {
 
             function onClickMenuButton() {
                 console.log('>>> onClickMenuButton')
-//                var component = Qt.createComponent("settings_window.qml")
-//                var window = component.createObject(menuButton)
-//                window.show()
-                dialogComponent = Qt.createComponent("settings_dialog.qml").createObject(menuButton, {});
+                settingsComponent = Qt.createComponent("settings_window.qml").createObject(menuButton, {});
                 console.log('<<< onClickMenuButton')
             }
 
@@ -462,3 +459,4 @@ ApplicationWindow {
         }
     }
 }
+

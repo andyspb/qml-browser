@@ -3,7 +3,6 @@
         <file>quickwindow.qml</file>
         <file>quickwindow_new.qml</file>
         <file>settings_window.qml</file>
-        <file>settings_dialog.qml</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="go-next.png">icons/go-next.png</file>
