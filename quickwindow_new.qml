@@ -66,9 +66,10 @@ ApplicationWindow {
         propagateComposedEvents : true
         onClicked : {
             console.log(">>> browserWindow.MouseArea.OnClicked");
-            if (dialogComponent != null) {
+            if (settingsComponent != null) {
                 console.log(">>> settingsComponent.destroy()");
                 settingsComponent.destroy();
+                settingsComponent = null;
             }
         }
     }
@@ -348,6 +349,7 @@ ApplicationWindow {
                 id: webEngineView
                 focus: true
                 onLinkHovered: {
+                    console.log('>>> tabComponent onLinkHovered')
                     if (hoveredUrl == "")
                         resetStatusText.start()
                     else {
