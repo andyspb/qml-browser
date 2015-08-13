@@ -20,4 +20,5 @@ target.path = qml-browser
 INSTALLS += target
 
 DISTFILES += \
-    settings_window.qml
+    settings_window.qml \
+    exit_full_screen_window.qml

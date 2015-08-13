@@ -55,6 +55,7 @@ ApplicationWindow {
                                   < tabs.count ? tabs.getTab(
                                                      tabs.currentIndex).item : null
     property Item settingsComponent: null
+    property Item fullscreenComponent: null
     property bool fullscreen: false
 
     width: 1300
@@ -117,10 +118,25 @@ ApplicationWindow {
         shortcut: "Esc"
         onTriggered: {
             console.log('>>> Escape')
-            browserWindow.fullscreen = false
-            console.log('>>> browserWindow.fullscreen:' + browserWindow.fullscreen)
-            tabs.visible = true
-            navigationBar.visible = true
+            onExitFullScreenClick ()
+//            browserWindow.fullscreen = false
+//            console.log('>>> browserWindow.fullscreen:' + browserWindow.fullscreen)
+//            tabs.visible = true
+//            navigationBar.visible = true
+//            if (fullscreenComponent !== null) {
+//                fullscreenComponent.destroy()
+//            }
+        }
+    }
+
+    function onExitFullScreenClick () {
+        console.log('>>> onExitFullScreenClick()')
+        browserWindow.fullscreen = false
+        console.log('>>> browserWindow.fullscreen:' + browserWindow.fullscreen)
+        tabs.visible = true
+        navigationBar.visible = true
+        if (fullscreenComponent !== null) {
+            fullscreenComponent.destroy()
         }
     }
 
@@ -151,6 +167,7 @@ ApplicationWindow {
                 id: addressBar
                 anchors.leftMargin: 5
                 anchors.rightMargin: 5
+
                 Image {
                     anchors.leftMargin: 2
                     anchors.verticalCenter: addressBar.verticalCenter
@@ -216,6 +233,7 @@ ApplicationWindow {
                 }
                 function onClickBookmarks() {
                     console.log('>>> onClickBookmarks')
+                    browserWindow.load("http://www.google.com")
                 }
                 function onClickSettings() {
                     console.log('>>> onClickSettings')
@@ -256,10 +274,14 @@ ApplicationWindow {
         function onClickFullScreen() {
             console.log('>>> onClickFullScreen')
             browserWindow.fullscreen = true
-            console.log('>>> browserWindow.fullscreen:' + browserWindow.fullscreen)
-            //                tabs.visible = false
+            console.log('>>> browserWindow:' + browserWindow)
             navigationBar.visible = false
+            console.log('>>> browserWindow.fullscreen:' + browserWindow.fullscreen)
+            fullscreenComponent = Qt.createComponent(
+                        "exit_full_screen_window.qml").createObject(tabs, {})
+
         }
+
     }
 
     TabView {
@@ -268,6 +290,17 @@ ApplicationWindow {
         Component.onCompleted: {
             createEmptyTab()
             createAddTab()
+        }
+
+        function onExitFullScreenClick () {
+            console.log('>>> onExitFullScreenClick()')
+            browserWindow.fullscreen = false
+            console.log('>>> browserWindow.fullscreen:' + browserWindow.fullscreen)
+            tabs.visible = true
+            navigationBar.visible = true
+            if (fullscreenComponent !== null) {
+                fullscreenComponent.destroy()
+            }
         }
 
         style: TabViewStyle {

@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>quickwindow.qml</file>
         <file>settings_window.qml</file>
+        <file>exit_full_screen_window.qml</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="go-next.png">icons/go-next.png</file>
