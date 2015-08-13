@@ -51,6 +51,7 @@ ApplicationWindow {
     function load(url) { currentWebView.url = url }
     property Item currentWebView: tabs.currentIndex < tabs.count ? tabs.getTab(tabs.currentIndex).item : null
     property Item settingsComponent: null
+    property bool fullscreen: false
 
     width: 1300
     height: 900
@@ -110,6 +111,8 @@ ApplicationWindow {
         shortcut: "Esc"
         onTriggered: {
             console.log('>>> Escape')
+            browserWindow.fullscreen = false;
+            console.log('>>> browserWindow.fullscreen:'+browserWindow.fullscreen)
             tabs.visible = true
             navigationBar.visible = true
         }
@@ -231,7 +234,9 @@ ApplicationWindow {
 
             function onClickFullScreen() {
                 console.log('>>> onClickFullScreen')
-                tabs.visible = false
+                browserWindow.fullscreen = true;
+                console.log('>>> browserWindow.fullscreen:'+browserWindow.fullscreen)
+//                tabs.visible = false
                 navigationBar.visible = false
             }
     }
@@ -259,14 +264,14 @@ ApplicationWindow {
                 color: "black"
 //                implicitWidth: styleData.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
                 implicitWidth: styleData.index === (tabs.count -1 ) ? 30 : 200
-                implicitHeight: 30
+                implicitHeight: browserWindow.fullscreen === true ? 0 : 30
                 border.width: 0
                 border.color: "black"
                 BorderImage {
                     id: borderImage
                     source: styleData.index === tabs.currentIndex ? "icons/top_border.png" : "icons/top_gray_border.png"
                     width: parent.width
-                    height: 30
+                    height: browserWindow.fullscreen === true ? 0 : 30
                     border.left: 0;
                     border.top: 2
                     border.right: 0;
@@ -281,7 +286,7 @@ ApplicationWindow {
                     z: 1
                     id: tabImage
                     width: 16;
-                    height: 16
+                    height: browserWindow.fullscreen === true ? 0 : 16
                     source: {
                         console.log('>> Image currentWebView:'+currentWebView)
                         if (currentWebView !== null && currentWebView.icon !== null && styleData.index === tabs.currentIndex)
@@ -311,9 +316,9 @@ ApplicationWindow {
                 Button {
                     id: addButton
                     iconSource: styleData.index === (tabs.count -1 ) ? "icons/plus.png" : "icons/close.png"
-                    visible: styleData.index === 0 ? false : true
+                    visible: (styleData.index === 0 || browserWindow.fullscreen === true )? false : true
                     activeFocusOnTab: styleData.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
-                    implicitHeight: 30
+                    implicitHeight: browserWindow.fullscreen === true ? 0 : 30
                     anchors.right: parent.right
                     anchors.rightMargin: 0
                     anchors.leftMargin: 2
@@ -322,7 +327,7 @@ ApplicationWindow {
                         id: buttonborderImage
                         source: styleData.index === tabs.currentIndex ? "icons/top_border.png" : "icons/top_gray_border.png"
                         width: parent.width
-                        height: 30
+                        height: browserWindow.fullscreen === true ? 0 : 30
                         border.left: 0;
                         border.top: 2
                         border.right: 0;
@@ -331,7 +336,7 @@ ApplicationWindow {
                     style: ButtonStyle {
                         background: Rectangle {
                             implicitWidth: 12
-                            implicitHeight: 12
+                            implicitHeight: browserWindow.fullscreen === true ? 0 : 12
                             color: "black"
                         }
                     }
