@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>quickwindow.qml</file>
-        <file>quickwindow_new.qml</file>
         <file>settings_window.qml</file>
     </qresource>
     <qresource prefix="/icons">

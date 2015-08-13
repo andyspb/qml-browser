@@ -61,7 +61,6 @@ public:
 ApplicationEngine::ApplicationEngine()
 {
     rootContext()->setContextProperty("utils", new Utils(this));
-//    load(QUrl("qrc:/quickwindow.qml"));
-    load(QUrl("qrc:/quickwindow_new.qml"));
+    load(QUrl("qrc:/quickwindow.qml"));
     QMetaObject::invokeMethod(rootObjects().first(), "load", Q_ARG(QVariant, startupUrl()));
 }

@@ -50,16 +50,29 @@ ApplicationWindow {
     id: browserWindow
     function load(url) { currentWebView.url = url }
     property Item currentWebView: tabs.currentIndex < tabs.count ? tabs.getTab(tabs.currentIndex).item : null
+    property Item settingsComponent: null
 
     width: 1300
     height: 900
     visible: true
     title: currentWebView && currentWebView.title
-
     // Create a styleItem to determine the platform.
     // When using style "mac", ToolButtons are not supposed to accept focus.
     StyleItem { id: styleItem }
     property bool platformIsMac: styleItem.style == "mac"
+
+    MouseArea{
+        anchors.fill : parent
+        propagateComposedEvents : true
+        onClicked : {
+            console.log(">>> browserWindow.MouseArea.OnClicked");
+            if (settingsComponent != null) {
+                console.log(">>> settingsComponent.destroy()");
+                settingsComponent.destroy();
+                settingsComponent = null;
+            }
+        }
+    }
 
     Action {
         id: focus
@@ -93,10 +106,23 @@ ApplicationWindow {
                 tabs.removeTab(tabs.currentIndex)
         }
     }
+    Action {
+        shortcut: "Esc"
+        onTriggered: {
+            console.log('>>> Escape')
+            tabs.visible = true
+            navigationBar.visible = true
+        }
+    }
 
     toolBar: ToolBar {
         id: navigationBar
-            RowLayout {
+        style: ToolBarStyle {
+            background: Rectangle {
+                color: "black"
+            }
+        }
+             RowLayout {
                 anchors.fill: parent;
                 ToolButton {
                     id: backButton
@@ -112,15 +138,12 @@ ApplicationWindow {
                     enabled: currentWebView && currentWebView.canGoForward
                     activeFocusOnTab: !browserWindow.platformIsMac
                 }
-                ToolButton {
-                    id: reloadButton
-                    iconSource: currentWebView && currentWebView.loading ? "icons/process-stop.png" : "icons/view-refresh.png"
-                    onClicked: currentWebView && currentWebView.loading ? currentWebView.stop() : currentWebView.reload()
-                    activeFocusOnTab: !browserWindow.platformIsMac
-                }
                 TextField {
                     id: addressBar
+                    anchors.leftMargin: 5
+                    anchors.rightMargin: 5
                     Image {
+                        anchors.leftMargin: 2
                         anchors.verticalCenter: addressBar.verticalCenter;
                         x: 5
                         z: 2
@@ -129,64 +152,289 @@ ApplicationWindow {
                         source: currentWebView && currentWebView.icon
                     }
                     style: TextFieldStyle {
+                        background: Rectangle {
+                            color: "gray"
+                            implicitHeight: 26
+                            radius: 13
+                        }
                         padding {
                             left: 26;
+                            right: 26;
                         }
                     }
                     focus: true
                     Layout.fillWidth: true
                     text: currentWebView && currentWebView.url
                     onAccepted: currentWebView.url = utils.fromUserInput(text)
+
+                    ToolButton {
+                        id: reloadButton
+                        iconSource: "icons/view-refresh.png"
+                        onClicked: currentWebView.reload()
+                        activeFocusOnTab: !browserWindow.platformIsMac
+                        anchors.right: addressBar.right
+                        anchors.rightMargin: 2
+                        anchors.verticalCenter: addressBar.verticalCenter;
+                    }
+
                 }
+                ToolButton {
+                    id: zoomButton
+                    iconSource: "icons/zoom_in_16.png"
+//                    onClicked: onClickZoomButton()navigationBar
+                    activeFocusOnTab: !browserWindow.platformIsMac
+                    style: ButtonStyle {
+                        background: Rectangle {
+                            implicitWidth: 24
+                            implicitHeight: 24
+                            color: "white"
+                            radius: 12
+                        }
+                    }
+                }
+                ToolButton {
+                    id: menuButton
+                    iconSource: "icons/menu_16.png"
+                    onClicked: navigationBar.onClickMenuButton()
+                    activeFocusOnTab: !browserWindow.platformIsMac
+                    style: ButtonStyle {
+                        background: Rectangle {
+                            implicitWidth: 24
+                            implicitHeight: 24
+                            color: "white"
+                            radius: 12
+                        }
+                    }
+                }
+                ToolButton {
+                    id: fullscreenButton
+                    iconSource: "icons/full_screen_16.png"
+                    onClicked: navigationBar.onClickFullScreen()
+                    activeFocusOnTab: !browserWindow.platformIsMac
+                    style: ButtonStyle {
+                        background: Rectangle {
+                            implicitWidth: 24
+                            implicitHeight: 24
+                            color: "white"
+                            radius: 12
+                        }
+                    }
+                }
+
             }
-            ProgressBar {
-                id: progressBar
-                height: 3
-                anchors {
-                    left: parent.left
-                    top: parent.bottom
-                    right: parent.right
-                    leftMargin: -parent.leftMargin
-                    rightMargin: -parent.rightMargin
-                }
-                style: ProgressBarStyle {
-                    background: Item {}
-                }
-                z: -2;
-                minimumValue: 0
-                maximumValue: 100
-                value: (currentWebView && currentWebView.loadProgress < 100) ? currentWebView.loadProgress : 0
+
+            function onClickMenuButton() {
+                console.log('>>> onClickMenuButton')
+                settingsComponent = Qt.createComponent("settings_window.qml").createObject(menuButton, {});
+                console.log('<<< onClickMenuButton')
+            }
+
+            function onClickFullScreen() {
+                console.log('>>> onClickFullScreen')
+                tabs.visible = false
+                navigationBar.visible = false
             }
     }
 
     TabView {
         id: tabs
-        function createEmptyTab() {
-            var tab = addTab("", tabComponent)
-            // We must do this first to make sure that tab.active gets set so that tab.item gets instantiated immediately.
-            tabs.currentIndex = tabs.count - 1
-            tab.title = Qt.binding(function() { return tab.item.title })
-            return tab
+        anchors.fill: parent
+        Component.onCompleted: {
+            createEmptyTab()
+            createAddTab()
         }
 
-        anchors.fill: parent
-        Component.onCompleted: createEmptyTab()
+        style: TabViewStyle {
+            frameOverlap: 1
+            frame: Rectangle { color: "black" }
+            tabBar: Rectangle { color: "black"; anchors.fill: parent }
+            tabOverlap: -20
+            tabsAlignment: Qt.AlignLeft
+            padding.left: 2
+            tab: Rectangle {
+                anchors.leftMargin: 5
+                anchors.rightMargin: 10
+                property color frameColor: "black"
+                property color fillColor: "black"
+                color: "black"
+//                implicitWidth: styleData.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
+                implicitWidth: styleData.index === (tabs.count -1 ) ? 30 : 200
+                implicitHeight: 30
+                border.width: 0
+                border.color: "black"
+                BorderImage {
+                    id: borderImage
+                    source: styleData.index === tabs.currentIndex ? "icons/top_border.png" : "icons/top_gray_border.png"
+                    width: parent.width
+                    height: 30
+                    border.left: 0;
+                    border.top: 2
+                    border.right: 0;
+                    border.bottom: 0;
+                }
+                Image {
+                    anchors.left: parent.left
+                    anchors.leftMargin: 2
+                    anchors.verticalCenter: parent.verticalCenter;
+                    visible: styleData.index === (tabs.count -1 ) ? false:true
+                    x: 1
+                    z: 1
+                    id: tabImage
+                    width: 16;
+                    height: 16
+                    source: {
+                        console.log('>> Image currentWebView:'+currentWebView)
+                        if (currentWebView !== null && currentWebView.icon !== null && styleData.index === tabs.currentIndex)
+                            currentWebView.icon
+                    }
+                }
+
+                Text {
+                    id: text
+                    width: 180
+                    anchors.left: parent.left
+                    anchors.leftMargin: 20
+                    anchors.verticalCenter: parent.verticalCenter;
+                    visible: styleData.index === (tabs.count -1 ) ? false:true
+                    elide : Text.ElideRight
+                    text: {
+                        console.log('>> Text currentWebView:'+currentWebView)
+                        console.log('>> Text currentWebView.url:'+currentWebView.url)
+                        if (currentWebView === null || currentWebView.url === null)
+                            "New Tab"
+                        else
+                            if (styleData.index === tabs.currentIndex)
+                                currentWebView.url
+                    }
+                    color: "white"
+                }
+                Button {
+                    id: addButton
+                    iconSource: styleData.index === (tabs.count -1 ) ? "icons/plus.png" : "icons/close.png"
+                    visible: styleData.index === 0 ? false : true
+                    activeFocusOnTab: styleData.index === (tabs.count -1 ) ? 30 :Math.max(text.width + 4, 200)
+                    implicitHeight: 30
+                    anchors.right: parent.right
+                    anchors.rightMargin: 0
+                    anchors.leftMargin: 2
+                    anchors.verticalCenter: tabs.verticalCenter;
+                    BorderImage {
+                        id: buttonborderImage
+                        source: styleData.index === tabs.currentIndex ? "icons/top_border.png" : "icons/top_gray_border.png"
+                        width: parent.width
+                        height: 30
+                        border.left: 0;
+                        border.top: 2
+                        border.right: 0;
+                        border.bottom: 0
+                    }
+                    style: ButtonStyle {
+                        background: Rectangle {
+                            implicitWidth: 12
+                            implicitHeight: 12
+                            color: "black"
+                        }
+                    }
+                    onClicked: {
+                        styleData.index === (tabs.count -1 ) ? tabs.clickAddButton() : tabs.clickCloseButton(styleData.index)
+                    }
+                }
+            }
+
+        }
 
         Component {
             id: tabComponent
             WebEngineView {
                 id: webEngineView
                 focus: true
-
                 onLinkHovered: {
+                    console.log('>>> tabComponent onLinkHovered')
                     if (hoveredUrl == "")
                         resetStatusText.start()
                     else {
                         resetStatusText.stop()
                         statusText.text = hoveredUrl
+                        console.log('statusText.text >> ' + statusText.text)
                     }
                 }
             }
+        }
+        Component {
+            id: tabAddComponent
+            Rectangle {
+                color: "white"
+                implicitWidth: 100
+            }
+
+//            WebEngineView {
+//                id: addWebEngineView
+//                focus: false
+//                onClipChanged: {
+//                    console.log(">>> onClipChanged")
+//                }
+//            }
+        }
+
+        function clickCloseButton(index) {
+            console.log(">>> clickCloseButton at index:"+index)
+            tabs.removeTab(index)
+            tabs.currentIndex = index-1
+        }
+
+        function clickAddButton() {
+            console.log("clickAddButton")
+            tabs.insertEmptyTab()
+        }
+
+
+        function isLastTab() {
+            console.log("tabs.tabPosition ="+tabs.tabPosition())
+            return true
+        }
+
+        function createEmptyTab() {
+            var tabsCount = tabs.count
+            console.log('>>> createEmptyTab tabsCount:'+tabsCount)
+            var tab = addTab("New tab", tabComponent)
+            // We must do this first to make sure that tab.active gets set so that tab.item gets instantiated immediately.
+            tabs.currentIndex = tabs.count - 1
+            console.log('tabs.tabPosition: ' + tabs.tabPosition)
+//            tab.title = Qt.binding(function() { return tab.item.title })
+            tab.title = "New Tab"
+
+            return tab
+        }
+
+        function insertEmptyTab() {
+            var pos = tabs.count - 1
+            console.log('>>> insertEmptyTab  pos:'+pos)
+            var tab = insertTab(pos, "New tab", tabComponent)
+            // We must do this first to make sure that tab.active gets set so that tab.item gets instantiated immediately.
+            tabs.currentIndex = pos
+            tab.title = "New Tab"
+            return tab
+        }
+
+
+        function createAddTab() {
+            var tabsCount = tabs.count
+            console.log('>>> createAddTab tabsCount:'+tabsCount)
+            var tab = addTab("", tabAddComponent)
+            if (tabs.count >= 2) {
+                tabs.currentIndex = tabs.count - 2
+            }
+
+            var last = tabs.count-1;
+            console.log('last: ' + last)
+            console.log('tabs.tabPosition: ' + tabs.tabPosition)
+            console.log('Current tab: ' + tabs.getTab(last).item);
+            console.log('tab: ' + tab.item);
+            tab.active = true;
+            tab.icon =  "icons/close.png";
+            console.log('>>> createAddTab:' + tabs.currentIndex);
+            console.log('>>> createAddTab:' + tabs.getTab(last));
+            return tab
         }
     }
 
@@ -213,3 +461,4 @@ ApplicationWindow {
         }
     }
 }
+

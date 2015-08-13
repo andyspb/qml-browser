@@ -6,7 +6,7 @@ HEADERS = quickwindow.h \
 SOURCES = quickwindow.cpp \
           main.cpp
 
-OTHER_FILES += quickwindow.qml quickwindow_new.qml
+OTHER_FILES += quickwindow.qml
 
 RESOURCES += resources.qrc
 
